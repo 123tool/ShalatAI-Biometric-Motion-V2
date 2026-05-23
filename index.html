@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShalatAI V2 - Motion Tracker & Corrector</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- MediaPipe Pustaka Inti Core AI -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Dashboard Kiri (Panel Kontrol & Statistik) -->
+        <div class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">🕋</div>
+                <div class="brand-text">
+                    <h1>ShalatAI <span class="badge-pro">V2</span></h1>
+                    <span>Biometric Motion Analyzer</span>
+                </div>
+            </div>
+
+            <!-- Konfigurasi Sesi -->
+            <div class="control-card">
+                <h3>⚙️ Pengaturan Evaluasi</h3>
+                <div class="form-group">
+                    <label for="shalat-select">Ibadah Shalat:</label>
+                    <select id="shalat-select">
+                        <option value="subuh">Subuh (2 Rakaat)</option>
+                        <option value="dhuhur" selected>Dhuhur (4 Rakaat)</option>
+                        <option value="ashar">Ashar (4 Rakaat)</option>
+                        <option value="maghrib">Maghrib (3 Rakaat)</option>
+                        <option value="isya">Isya (4 Rakaat)</option>
+                        <option value="dhuha">Dhuha (Sunnah - 2 Rakaat)</option>
+                        <option value="tahajjud">Tahajjud (Sunnah - 2 Rakaat)</option>
+                    </select>
+                </div>
+                
+                <div class="toggle-group">
+                    <label class="switch-container">
+                        <input type="checkbox" id="toggle-audio" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">Panduan Suara AI (Koreksi Audio)</span>
+                </div>
+
+                <button id="btn-start" class="btn btn-primary">▶️ Aktifkan AI Camera</button>
+                <button id="btn-stop" class="btn btn-danger hidden">⏹️ Batalkan Sesi</button>
+            </div>
+
+            <!-- Live Telemetry Counter -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Target Rakaat</span>
+                    <span id="target-rakaat-val" class="stat-value">4</span>
+                </div>
+                <div class="stat-box accent">
+                    <span class="stat-label">Rakaat Sah</span>
+                    <span id="current-rakaat-val" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <!-- Real-time State & Tumakninah Meter -->
+            <div class="monitor-card">
+                <h3>🔄 Status Rukun Fisik</h3>
+                <div id="movement-state" class="badge-state state-idle">IDLE (SIAP)</div>
+                
+                <div class="tumakninah-meter">
+                    <div class="meter-label">
+                        <span>Validasi Ketenangan (Tumakninah)</span>
+                        <span id="tumakninah-timer">0.0s</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div id="meter-fill" class="meter-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Korektor Log Cascading -->
+            <div class="feedback-card">
+                <h3>📢 Korektor Sunnah & Gerakan</h3>
+                <div id="live-feedback" class="feedback-box waiting">
+                    Menunggu inisialisasi model... Pastikan tubuh terlihat penuh dari ujung kepala hingga kaki di area kamera.
+                </div>
+            </div>
+        </div>
+
+        <!-- Area Kanan (Kamera Feed & Canvas Telemetri) -->
+        <div class="main-content">
+            <div class="video-wrapper">
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="output_canvas"></canvas>
+                
+                <!-- HUD Overlay Informasi Biometrik -->
+                <div class="hud-overlay-top">
+                    <div id="overlay-pose" class="hud-badge">State: Scanning</div>
+                    <div id="overlay-back-angle" class="hud-badge warning">Sudut Punggung: 0°</div>
+                    <div id="overlay-score" class="hud-badge success">Model FPS: Stable</div>
+                </div>
+
+                <!-- Indikator Loading Saat Download Model Jaringan Google -->
+                <div id="loading-container" class="loading-screen">
+                    <div class="spinner"></div>
+                    <p class="loading-text">MENGUNDUH BIOMETRIC MODEL ENGINE...</p>
+                    <span class="loading-sub">Proses ini membutuhkan waktu beberapa detik pada muatan pertama.</span>
+                </div>
+            </div>
+
+            <!-- Modal Rapor Kompleks Hasil Evaluasi -->
+            <div id="report-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>📊 Jurnal & Rapor Kualitas Shalat</h2>
+                        <span class="badge-saved">Saved to LocalDB</span>
+                    </div>
+                    <div class="report-summary">
+                        <div class="report-meta">
+                            <p><strong>Ibadah:</strong> <span id="rep-jenis">-</span></p>
+                            <p><strong>Siklus Rakaat:</strong> <span id="rep-rakaat">-</span></p>
+                            <p><strong>Skor Akurasi Gerakan:</strong> <span id="rep-akurasi">-</span></p>
+                        </div>
+                        <div class="divider"></div>
+                        <h3>📝 Catatan Evaluasi & Koreksi Sunnah:</h3>
+                        <ul id="rep-catatan" class="log-list">
+                            <!-- Data log komparatif diinjeksikan lewat JS -->
+                        </ul>
+                    </div>
+                    <button id="btn-close-report" class="btn btn-secondary">Selesai & Sesi Baru</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Core App JS Engine -->
+    <script src="js/app.js"></script>
+</body>
+</html>
