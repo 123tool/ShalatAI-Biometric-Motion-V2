@@ -1,0 +1,545 @@
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --surface-glass: rgba(30, 41, 59, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --radius-lg: 16px;
+    --radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Layout Grid Container Utama */
+.app-container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    min-height: 100vh;
+    width: 100vw;
+}
+
+/* ==========================================================================
+   PANEL KIRI (SIDEBAR KONTROL & TELEMETRI)
+   ========================================================================== */
+.sidebar {
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-glass);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.logo-icon {
+    font-size: 2rem;
+}
+
+.brand-text h1 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge-pro {
+    background: linear-gradient(90deg, #ff007f, #7928ca);
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+}
+
+.brand-text span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: block;
+}
+
+/* Komponen Card Kontrol */
+.control-card, .monitor-card, .feedback-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+}
+
+h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+}
+
+select {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid var(--border-glass);
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Tombol / Buttons */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Toggle Switch Custom */
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #334155;
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--success);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.toggle-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Grid Panel Statistik */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-box.accent {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stat-box.accent .stat-value {
+    color: var(--success);
+    text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+/* State & Progress Tumakninah */
+.badge-state {
+    text-align: center;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.state-idle { background: #334155; color: #94a3b8; }
+.state-berdiri { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid var(--primary); }
+.state-ruku { background: rgba(245, 158, 11, 0.2); color: #fde047; border: 1px solid var(--warning); }
+.state-sujud { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid var(--success); }
+.state-itidal { background: rgba(6, 182, 212, 0.2); color: #67e8f9; border: 1px solid #06b6d4; }
+.state-duduk { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid #a855f7; }
+
+.tumakninah-meter {
+    background: #0f172a;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-glass);
+}
+
+.meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.meter-bar {
+    width: 100%;
+    height: 8px;
+    background: #1e293b;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--warning), var(--success));
+    transition: width 0.1s linear;
+}
+
+/* Live Cascading Logs */
+.feedback-box {
+    min-height: 70px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+}
+.feedback-box.waiting { background: #1e293b; color: var(--text-muted); border-left: 4px solid var(--text-muted); }
+.feedback-box.normal { background: rgba(99, 102, 241, 0.1); color: #c7d2fe; border-left: 4px solid var(--primary); }
+.feedback-box.warning-status { background: rgba(245, 158, 11, 0.15); color: #fef08a; border-left: 4px solid var(--warning); animation: pulse 1.5s infinite; }
+.feedback-box.success-status { background: rgba(16, 185, 129, 0.15); color: #a7f3d0; border-left: 4px solid var(--success); }
+
+/* ==========================================================================
+   PANEL KANAN (KAMERA FEED & GRAPHIC HUD OVERLAY)
+   ========================================================================== */
+.main-content {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 4/3;
+    background: #090d16;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-glass);
+}
+
+#webcam, #output_canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#output_canvas {
+    z-index: 2;
+}
+
+#webcam {
+    transform: scaleX(-1); /* Efek Cermin agar natural bagi user */
+}
+
+/* HUD Overlay Top */
+.hud-overlay-top {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 3;
+    display: flex;
+    gap: 12px;
+}
+
+.hud-badge {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1px solid var(--border-glass);
+}
+.hud-badge.warning { border-color: rgba(245, 158, 11, 0.4); color: #fde047; }
+.hud-badge.success { border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+
+/* Loading Engine Overlay */
+.loading-screen {
+    position: absolute;
+    inset: 0;
+    background: #0f172a;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border-glass);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.loading-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   MODAL DIALOG (REKAP RAPOR SESI SHALAT)
+   ========================================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #1e1b4b;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 100%;
+    max-width: 550px;
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.badge-saved {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.report-summary h3 {
+    margin-top: 16px;
+    margin-bottom: 10px;
+}
+
+.report-meta p {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-glass);
+    margin: 16px 0;
+}
+
+.log-list {
+    list-style: none;
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.log-list li {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary);
+}
+
+/* Utilities classes */
+.hidden { display: none !important; }
+
+/* Keyframe Animasi */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* ==========================================================================
+   RESPONSIVE DESIGN ADAPTATION (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 1100px) {
+    .app-container {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border-glass);
+    }
+    .main-content {
+        padding: 16px;
+    }
+}
