@@ -42,6 +42,8 @@ let angle = Math.abs((radians * 180.0) / Math.PI);
 if (angle > 180.0) angle = 360.0 - angle;
 ```
 
+---
+
 ## 📂 Alur Kerja Arsitektur State Machine (Siklus Rakaat)
 ​Aplikasi ini menggunakan metode Deterministic Finite State Machine (FSM) berantai. Artinya, rakaat tidak akan bertambah jika pengguna melompati salah satu rukun secara acak.
 ```
@@ -68,6 +70,8 @@ if (angle > 180.0) angle = 360.0 - angle;
               ▼
    (Kembali ke BERDIRI) ───► [ SIKLUS RAKAAT BERTAMBAH +1 ]
 ```
+
+---
 
 ## ​🛡️ Panduan Posisi Kamera Kunci untuk Akurasi Maksimal
 
